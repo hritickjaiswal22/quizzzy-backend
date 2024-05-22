@@ -8,8 +8,6 @@ const requireAuth = (req: Request, res: Response, next: Function) => {
   const bearerToken = req.headers.authorization;
   const token = bearerToken?.split(" ")[1];
 
-  console.log(token?.split(" ")[1]);
-
   if (token) {
     jwt.verify(token, process.env.JWT_TOKEN_KEY || "", (err, decodedToken) => {
       if (err || !decodedToken) {
