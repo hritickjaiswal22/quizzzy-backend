@@ -46,14 +46,14 @@ async function register(req: Request, res: Response) {
         );
 
         const token = createSecretToken(result.insertedId.id.toString());
-        res.cookie("token", token, {
-          httpOnly: false,
-        });
 
         return res.status(201).send({
           message: "User signed in successfully",
           success: true,
-          result,
+          user: {
+            email,
+            token,
+          },
         });
       }
     }
@@ -94,13 +94,14 @@ async function login(req: Request, res: Response) {
     }
 
     const token = createSecretToken(_id?.toString() || "");
-    res.cookie("token", token, {
-      httpOnly: false,
-    });
 
     return res.status(200).send({
       message: "User signed in successfully",
       success: true,
+      user: {
+        email,
+        token,
+      },
     });
   } catch (error) {
     return res

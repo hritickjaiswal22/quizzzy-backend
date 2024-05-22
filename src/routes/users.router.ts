@@ -1,6 +1,7 @@
 // External Dependencies
 import express from "express";
 import { getUsers } from "../controllers/users.controller";
+import { requireAuth } from "../middlewares/auth.middleware";
 
 // Global Config
 const usersRouter = express.Router();
@@ -8,7 +9,7 @@ const usersRouter = express.Router();
 usersRouter.use(express.json());
 
 // GET
-usersRouter.get("/", getUsers);
+usersRouter.get("/", requireAuth, getUsers);
 
 // POST
 
