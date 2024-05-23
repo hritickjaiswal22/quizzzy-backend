@@ -53,6 +53,7 @@ async function register(req: Request, res: Response) {
           user: {
             email,
             token,
+            userId: result?.insertedId,
           },
         });
       }
@@ -101,6 +102,7 @@ async function login(req: Request, res: Response) {
       user: {
         email,
         token,
+        userId: _id?.toString(),
       },
     });
   } catch (error) {

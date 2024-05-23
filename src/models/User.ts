@@ -7,6 +7,7 @@ class User {
     email: string,
     password: string,
     date: Date,
+    score: number,
     name?: string,
     id?: ObjectId
   ) {}
@@ -16,6 +17,7 @@ interface UserType {
   email: string;
   password: string;
   date: Date;
+  score: number;
   name?: string;
   _id?: ObjectId;
 }
