@@ -62,7 +62,7 @@ async function createExam(req: Request, res: Response) {
       return res.status(201).send({
         message: "Created an exam",
         success: true,
-        user: {
+        exam: {
           examId: result?.insertedId,
           nextQuestion: question,
         },
