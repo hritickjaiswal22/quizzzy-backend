@@ -3,6 +3,7 @@ import { connectToDatabase } from "./services/database.service";
 import { usersRouter } from "./routes/users.router";
 import { authsRouter } from "./routes/auths.router";
 import { examsRouter } from "./routes/exams.router";
+// import { questionsRouter } from "./routes/questions.router";
 import bodyParser from "body-parser";
 import cors from "cors";
 
@@ -23,6 +24,7 @@ connectToDatabase()
     app.use("/users", usersRouter);
     app.use("/auths", authsRouter);
     app.use("/exams", examsRouter);
+    // app.use("/questions", questionsRouter);
 
     app.listen(port, () => {
       console.log(`Server started at http://localhost:${port}`);

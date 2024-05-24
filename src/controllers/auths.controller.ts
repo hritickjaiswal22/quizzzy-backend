@@ -1,9 +1,10 @@
 // External Dependencies
-import { Request, Response } from "express";
 import { collections } from "../services/database.service";
 import User, { UserType } from "../models/User";
-import * as bcrypt from "bcrypt";
 import { createSecretToken } from "../utils/jwtToken";
+
+import * as bcrypt from "bcrypt";
+import { Request, Response } from "express";
 
 const saltRounds = 10;
 
