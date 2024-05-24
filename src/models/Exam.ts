@@ -8,6 +8,7 @@ class Exam {
     questionIds: Array<string>,
     responses: Array<number>,
     date: Date,
+    score: number,
     completed: boolean,
     id?: ObjectId
   ) {}
@@ -18,6 +19,7 @@ interface ExamType {
   questionIds: Array<string>;
   responses: Array<number>;
   date: Date;
+  score: number;
   completed: boolean;
   _id?: ObjectId;
 }
