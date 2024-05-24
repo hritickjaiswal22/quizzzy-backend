@@ -1,9 +1,6 @@
 // External Dependencies
 import { collections } from "../services/database.service";
-import Exam from "../models/Exam";
-import Question, { QuestionType } from "../models/Question";
 
-import { ObjectId } from "mongodb";
 import { Request, Response } from "express";
 
 async function postQuestions(req: Request, res: Response) {
