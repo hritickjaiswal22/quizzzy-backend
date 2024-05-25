@@ -189,4 +189,31 @@ async function examResult(req: Request, res: Response) {
   }
 }
 
-export { createExam, answerExam, examResult };
+async function getUserExams(req: Request, res: Response) {
+  try {
+    const { userId } = req.params;
+
+    const examQuery = { userId };
+
+    const userExams = (await collections?.exams
+      ?.find(examQuery)
+      .toArray()) as ExamType[];
+
+    userExams.forEach((userExam) => {
+      (userExam as any).id = userExam._id?.toString();
+      delete userExam._id;
+    });
+
+    return res.status(200).send({
+      message: "Succesfully found all user exams",
+      success: true,
+      exams: userExams,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .send({ message: (error as any).message, success: false });
+  }
+}
+
+export { createExam, answerExam, examResult, getUserExams };

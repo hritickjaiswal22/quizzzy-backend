@@ -4,6 +4,7 @@ import {
   createExam,
   answerExam,
   examResult,
+  getUserExams,
 } from "../controllers/exams.controller";
 import { requireAuth } from "../middlewares/auth.middleware";
 
@@ -15,5 +16,6 @@ examsRouter.use(express.json());
 examsRouter.post("/create", requireAuth, createExam);
 examsRouter.put("/answer", requireAuth, answerExam);
 examsRouter.get("/results/:examId", requireAuth, examResult);
+examsRouter.get("/history/:userId", requireAuth, getUserExams);
 
 export { examsRouter };
