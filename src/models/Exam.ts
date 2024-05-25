@@ -6,7 +6,7 @@ class Exam {
   constructor(
     userId: string,
     questionIds: Array<string>,
-    responses: Array<number>,
+    responseIndices: Array<number>,
     date: Date,
     score: number,
     completed: boolean,
@@ -17,7 +17,7 @@ class Exam {
 interface ExamType {
   userId: string;
   questionIds: Array<string>;
-  responses: Array<number>;
+  responseIndices: Array<number>;
   date: Date;
   score: number;
   completed: boolean;

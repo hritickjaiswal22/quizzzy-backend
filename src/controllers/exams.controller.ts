@@ -6,7 +6,7 @@ import Question, { QuestionType } from "../models/Question";
 import { ObjectId } from "mongodb";
 import { Request, Response } from "express";
 
-const TOTAL_QUESTIONS = 5;
+const TOTAL_QUESTIONS = 20;
 
 async function getNextQuestion(
   difficulty: number,
@@ -46,6 +46,7 @@ async function createExam(req: Request, res: Response) {
     const result = await collections?.exams?.insertOne({
       userId,
       questionIds: [],
+      responseIndices: [],
       date: new Date(),
       score: 0,
       completed: false,
@@ -104,6 +105,10 @@ async function answerExam(req: Request, res: Response) {
       ...updatedChosenExam.questionIds,
       questionId,
     ];
+    updatedChosenExam.responseIndices = [
+      ...updatedChosenExam.responseIndices,
+      Number(selectedIndex),
+    ];
     if (selectedIndex === prevQuestion[0].correctOptionIndex) {
       updatedChosenExam.score += prevQuestion[0].difficulty;
 
@@ -150,4 +155,38 @@ async function answerExam(req: Request, res: Response) {
   }
 }
 
-export { createExam, answerExam };
+async function examResult(req: Request, res: Response) {
+  try {
+    const { examId } = req.params;
+
+    const examQuery = { _id: new ObjectId(examId) };
+
+    const chosenExam = (await collections?.exams
+      ?.find(examQuery)
+      .toArray()) as ExamType[];
+
+    const objectIds = chosenExam[0].questionIds.map((id) => new ObjectId(id));
+
+    const questions = await collections?.questions
+      ?.find({ _id: { $in: objectIds } }, { projection: { _id: 0 } })
+      .toArray();
+
+    const exam: any = { ...chosenExam[0] };
+
+    exam.id = exam._id?.toString();
+    delete exam._id;
+
+    return res.status(200).send({
+      message: "Succesfully generatad exam Result",
+      success: true,
+      questions,
+      exam,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .send({ message: (error as any).message, success: false });
+  }
+}
+
+export { createExam, answerExam, examResult };
