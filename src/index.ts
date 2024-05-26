@@ -19,7 +19,7 @@ dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 5000;
 const corsOptions = {
-  origin: "http://localhost:5173", // Your frontend's domain
+  origin: process.env.FRONT_END_DOMAIN || "http://localhost:5173", // Your frontend's domain
   credentials: true, // Enable sending of cookies
 };
 

@@ -3,6 +3,9 @@ import { register, login } from "../controllers/auths.controller";
 
 import express from "express";
 import passport from "passport";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 // Global Config
 const authsRouter = express.Router();
@@ -36,7 +39,7 @@ authsRouter.get(
     res.cookie("userId", (req?.user as any)?.userId || "");
 
     // Successful authentication, redirect to the frontend.
-    res.redirect("http://localhost:5173/redirect");
+    res.redirect(`${process.env.FRONT_END_DOMAIN}/redirect`);
   }
 );
 
