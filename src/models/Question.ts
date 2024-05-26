@@ -8,6 +8,7 @@ class Question {
     options: Array<string>,
     correctOptionIndex: number,
     difficulty: number,
+    tags: Array<string>,
     id?: ObjectId
   ) {}
 }
@@ -17,6 +18,7 @@ interface QuestionType {
   options: Array<string>;
   correctOptionIndex: number;
   difficulty: number;
+  tags: Array<string>;
   _id?: ObjectId;
 }
 
