@@ -38,8 +38,13 @@ app.use(cors(corsOptions));
 app.use(
   expressSession({
     secret: process.env.EXPRESS_SESSION_SECRET || "abc",
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      secure: true, //Enable when deployment OR when not using localhost, this wont work without https
+      sameSite: "none", //Enable when deployment OR when not using localhost, We're not on the same site, we're using different site so the cookie need to effectively transfer from Backend to Frontend
+    },
   })
 );
 app.use(passport.initialize());
