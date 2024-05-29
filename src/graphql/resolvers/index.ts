@@ -6,6 +6,9 @@ const resolvers = {
   Query: {
     hello: () => `Hello from graphql resolver`,
     getAllUsers: (_: any) => getUsers(),
+  },
+
+  Mutation: {
     signup: (_: any, { email, password }: any) => register(email, password),
   },
 };

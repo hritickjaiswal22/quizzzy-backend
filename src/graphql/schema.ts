@@ -12,10 +12,13 @@ type AuthResponse {
   userId: String
 }
 
+type Mutation {
+  signup(email: String!,password: String!): AuthResponse
+}
+
 type Query {
   hello: String
   getAllUsers: [User]
-  signup(email: String!,password: String!): AuthResponse
 }
 `;
 
