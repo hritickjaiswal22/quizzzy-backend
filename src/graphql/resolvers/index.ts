@@ -1,6 +1,6 @@
 // External Dependencies
 import { getUsers } from "./users";
-import { register } from "./auth";
+import { register, login } from "./auth";
 
 const resolvers = {
   Query: {
@@ -10,6 +10,7 @@ const resolvers = {
 
   Mutation: {
     signup: (_: any, { email, password }: any) => register(email, password),
+    signin: (_: any, { email, password }: any) => login(email, password),
   },
 };
 

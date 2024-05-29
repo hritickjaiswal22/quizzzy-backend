@@ -18,7 +18,7 @@ function validateLoginInput(email: string, password: string) {
 function throwError(message: string, status: number) {
   throw new GraphQLError(message, {
     extensions: {
-      code: message,
+      code: status,
       http: {
         status,
       },
@@ -65,4 +65,40 @@ async function register(email: string, password: string) {
   }
 }
 
-export { register };
+async function login(email: string, password: string) {
+  try {
+    const isValid = validateLoginInput(email, password);
+
+    if (!isValid) {
+      throwError("Invalid Input", 400);
+    }
+
+    const existingUser = (await collections?.users
+      ?.find({ email })
+      .toArray()) as UserType[];
+
+    if (!existingUser.length) {
+      throwError("User does not exists", 401);
+    }
+
+    const { password: hashedPassword, _id } = existingUser[0] as UserType;
+
+    const auth = await bcrypt.compare(password, hashedPassword);
+
+    if (!auth) {
+      throwError("Incorrect password or email", 401);
+    }
+
+    const token = createSecretToken(_id?.toString() || "");
+
+    return {
+      email,
+      token,
+      userId: _id?.toString(),
+    };
+  } catch (error) {
+    throwError((error as any).message, 500);
+  }
+}
+
+export { register, login };

@@ -14,6 +14,7 @@ type AuthResponse {
 
 type Mutation {
   signup(email: String!,password: String!): AuthResponse
+  signin(email: String!,password: String!): AuthResponse
 }
 
 type Query {
