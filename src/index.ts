@@ -1,8 +1,8 @@
+// Dependencies
 import express, { Express } from "express";
 import expressSession from "express-session";
 import passport from "passport";
 import * as dotenv from "dotenv";
-import cookieSession from "cookie-session";
 
 import { connectToDatabase } from "./services/database.service";
 import { usersRouter } from "./routes/users.router";
@@ -16,20 +16,13 @@ import cors from "cors";
 
 dotenv.config();
 
+// Creating an Express application and configuring it
 const app: Express = express();
 const port = process.env.PORT || 5000;
 const corsOptions = {
   origin: process.env.FRONT_END_DOMAIN || "http://localhost:5173", // Your frontend's domain
   credentials: true, // Enable sending of cookies
 };
-
-// setting up cookieSession
-// app.use(
-//   cookieSession({
-//     maxAge: 3 * 24 * 60 * 60,
-//     keys: [process.env.COOKIE_KEY || "abc"],
-//   })
-// );
 
 // middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -50,6 +43,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Connect to the database and set up routes
 connectToDatabase()
   .then(() => {
     app.use("/users", usersRouter);
