@@ -1,12 +1,14 @@
 // External Dependencies
 import { getUsers } from "./users";
 import { register, login } from "./auth";
-import { createExam, answerExam } from "./exams";
+import { createExam, answerExam, examResult } from "./exams";
 
 const resolvers = {
   Query: {
     hello: () => `Hello from graphql resolver`,
     getAllUsers: (_: any) => getUsers(),
+    getExamResults: (_: any, { examId }: any, context: any) =>
+      examResult(examId, context),
   },
 
   Mutation: {

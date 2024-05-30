@@ -148,4 +148,35 @@ async function answerExam(obj: any) {
   }
 }
 
-export { createExam, answerExam };
+async function examResult(examId: string, context: any) {
+  try {
+    if (!context || !context.user) throwError("User is not authenticated", 401);
+
+    const examQuery = { _id: new ObjectId(examId) };
+
+    const chosenExam = (await collections?.exams
+      ?.find(examQuery)
+      .toArray()) as ExamType[];
+
+    if (!chosenExam.length) throwError("Invalid input", 400);
+
+    const objectIds = chosenExam[0].questionIds.map((id) => new ObjectId(id));
+
+    const questions = await collections?.questions
+      ?.find({ _id: { $in: objectIds } }, { projection: { _id: 0 } })
+      .toArray();
+
+    const { questionIds, ...exam } = chosenExam[0];
+
+    return {
+      message: "Succesfully generatad exam Result",
+      success: true,
+      questions,
+      exam,
+    };
+  } catch (error) {
+    throwError((error as any).message, 500);
+  }
+}
+
+export { createExam, answerExam, examResult };

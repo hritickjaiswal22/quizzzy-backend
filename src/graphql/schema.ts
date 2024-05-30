@@ -32,6 +32,22 @@ type ClientQuestionResponse {
   _id: ID!
 }
 
+type ResultQuestionResponse {
+  text: String
+  options: [String]
+  correctOptionIndex: Int
+  difficulty: Int
+  tags: [String]
+}
+
+type ResultExamResponse {
+  userId: String!
+  responseIndices: [Int]
+  score: Int!
+  completed: Boolean!
+  _id: ID!
+}
+
 type AuthResponse {
   email: String
   token: String
@@ -50,6 +66,13 @@ type AnswerQuizResponse {
   completed: Boolean
 }
 
+type QuizResultResponse {
+  message: String
+  success: Boolean
+  questions: [ResultQuestionResponse]
+  exam : ResultExamResponse
+}
+
 type Mutation {
   signup(email: String!,password: String!): AuthResponse
   signin(email: String!,password: String!): AuthResponse
@@ -60,6 +83,7 @@ type Mutation {
 type Query {
   hello: String
   getAllUsers: [User]
+  getExamResults(examId: String!): QuizResultResponse
 }
 `;
 
