@@ -179,4 +179,26 @@ async function examResult(examId: string, context: any) {
   }
 }
 
-export { createExam, answerExam, examResult };
+async function getUserExams(context: any) {
+  try {
+    if (!context || !context.user) throwError("User is not authenticated", 401);
+
+    const userId = context.user._id.toString();
+
+    const examQuery = { userId };
+
+    const userExams = (await collections?.exams
+      ?.find(examQuery)
+      .toArray()) as ExamType[];
+
+    return {
+      message: "Succesfully found all user exams",
+      success: true,
+      exams: userExams,
+    };
+  } catch (error) {
+    throwError((error as any).message, 500);
+  }
+}
+
+export { createExam, answerExam, examResult, getUserExams };

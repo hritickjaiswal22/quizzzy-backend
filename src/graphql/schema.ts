@@ -73,6 +73,12 @@ type QuizResultResponse {
   exam : ResultExamResponse
 }
 
+type UserExamsHistoryResponse {
+  message: String
+  success: Boolean
+  exams: [Exam]
+}
+
 type Mutation {
   signup(email: String!,password: String!): AuthResponse
   signin(email: String!,password: String!): AuthResponse
@@ -84,6 +90,7 @@ type Query {
   hello: String
   getAllUsers: [User]
   getExamResults(examId: String!): QuizResultResponse
+  getUserExamsHistory: UserExamsHistoryResponse
 }
 `;
 

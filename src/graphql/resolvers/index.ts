@@ -1,7 +1,7 @@
 // External Dependencies
 import { getUsers } from "./users";
 import { register, login } from "./auth";
-import { createExam, answerExam, examResult } from "./exams";
+import { createExam, answerExam, examResult, getUserExams } from "./exams";
 
 const resolvers = {
   Query: {
@@ -9,6 +9,8 @@ const resolvers = {
     getAllUsers: (_: any) => getUsers(),
     getExamResults: (_: any, { examId }: any, context: any) =>
       examResult(examId, context),
+    getUserExamsHistory: (_: any, __: any, context: any) =>
+      getUserExams(context),
   },
 
   Mutation: {
