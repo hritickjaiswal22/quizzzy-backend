@@ -1,19 +1,22 @@
 import { collections } from "../../services/database.service";
 import { throwError } from "./getGraphqlError";
 import { QuestionType } from "../../models/Question";
+import { ExamType } from "../../models/Exam";
 
 import { ObjectId } from "mongodb";
+
+const TOTAL_QUESTIONS = 2;
 
 async function getNextQuestion(
   difficulty: number,
   answeredQuestionsIds: Array<string>
-) {
+): Promise<QuestionType> {
   try {
     const excludeIds = answeredQuestionsIds.map(
       (id: string) => new ObjectId(id)
     );
 
-    const nextQuestion = await collections?.questions
+    const nextQuestion = (await collections?.questions
       ?.aggregate([
         {
           $match: {
@@ -23,7 +26,7 @@ async function getNextQuestion(
         },
         { $sample: { size: 1 } }, // Randomly select one document
       ])
-      .toArray();
+      .toArray()) as QuestionType[];
 
     if (nextQuestion?.length) {
       return nextQuestion[0];
@@ -67,4 +70,82 @@ async function createExam(context: any) {
   }
 }
 
-export { createExam };
+async function answerExam(obj: any) {
+  const { context, examId, questionId, selectedIndex } = obj;
+  try {
+    if (!context || !context.user) throwError("User is not authenticated", 401);
+    if (!examId || !questionId || typeof selectedIndex !== "number")
+      throwError("Invalid input", 404);
+
+    const examQuery = { _id: new ObjectId(examId) };
+    const questionQuery = { _id: new ObjectId(questionId) };
+
+    const chosenExam = (await collections?.exams
+      ?.find(examQuery)
+      .toArray()) as ExamType[];
+    const prevQuestion = (await collections?.questions
+      ?.find(questionQuery)
+      .toArray()) as QuestionType[];
+
+    if (
+      !chosenExam.length ||
+      !prevQuestion.length ||
+      chosenExam[0].completed ||
+      chosenExam[0].questionIds.length === TOTAL_QUESTIONS
+    )
+      throwError("Invalid input", 400);
+
+    // Deciding difficulty for next question
+    let nextDifficulty = 1;
+    const updatedChosenExam: ExamType = { ...chosenExam[0] };
+    updatedChosenExam.questionIds = [
+      ...updatedChosenExam.questionIds,
+      questionId,
+    ];
+    updatedChosenExam.responseIndices = [
+      ...updatedChosenExam.responseIndices,
+      Number(selectedIndex),
+    ];
+    if (selectedIndex === prevQuestion[0].correctOptionIndex) {
+      updatedChosenExam.score += prevQuestion[0].difficulty;
+
+      nextDifficulty = prevQuestion[0].difficulty + 1;
+    } else {
+      nextDifficulty = prevQuestion[0].difficulty - 1;
+    }
+
+    if (nextDifficulty > 3) nextDifficulty = 3;
+    if (nextDifficulty < 1) nextDifficulty = 1;
+    if (updatedChosenExam.questionIds.length === TOTAL_QUESTIONS) {
+      updatedChosenExam.completed = true;
+    }
+
+    const examUpdateResult = await collections?.exams?.updateOne(examQuery, {
+      $set: updatedChosenExam,
+    });
+
+    if (updatedChosenExam.questionIds.length === TOTAL_QUESTIONS) {
+      return {
+        message: "Submission completed",
+        success: true,
+        completed: true,
+      };
+    }
+
+    const { correctOptionIndex, ...nextQuestion } = await getNextQuestion(
+      nextDifficulty,
+      updatedChosenExam.questionIds
+    );
+
+    return {
+      message: "Submission completed",
+      success: true,
+      nextQuestion,
+      completed: false,
+    };
+  } catch (error) {
+    throwError((error as any).message, 500);
+  }
+}
+
+export { createExam, answerExam };

@@ -43,10 +43,18 @@ type CreateExamResponse {
   nextQuestion: ClientQuestionResponse
 }
 
+type AnswerQuizResponse {
+  message: String
+  success: Boolean
+  nextQuestion: ClientQuestionResponse
+  completed: Boolean
+}
+
 type Mutation {
   signup(email: String!,password: String!): AuthResponse
   signin(email: String!,password: String!): AuthResponse
   newQuiz: CreateExamResponse
+  answerQuizQuestion(examId: String!, questionId: String!, selectedIndex: Int!): AnswerQuizResponse
 }
 
 type Query {
