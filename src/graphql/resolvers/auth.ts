@@ -1,9 +1,9 @@
 import { collections } from "../../services/database.service";
 import { UserType } from "../../models/User";
 import { createSecretToken } from "../../utils/jwtToken";
+import { throwError } from "./getGraphqlError";
 
 import * as bcrypt from "bcrypt";
-import { GraphQLError } from "graphql";
 
 const saltRounds = 10;
 
@@ -13,17 +13,6 @@ function validateRegisterInput(email: string, password: string) {
 
 function validateLoginInput(email: string, password: string) {
   return email.length && password.length;
-}
-
-function throwError(message: string, status: number) {
-  throw new GraphQLError(message, {
-    extensions: {
-      code: status,
-      http: {
-        status,
-      },
-    },
-  });
 }
 
 async function register(email: string, password: string) {

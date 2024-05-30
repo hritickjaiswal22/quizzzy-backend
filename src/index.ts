@@ -8,6 +8,7 @@ import { expressMiddleware } from "@apollo/server/express4";
 
 import { resolvers } from "./graphql/resolvers";
 import { typeDefs } from "./graphql/schema";
+import { requireAuth } from "./graphql/middlewares/auth";
 import { connectToDatabase } from "./services/database.service";
 import { usersRouter } from "./routes/users.router";
 import { authsRouter } from "./routes/auths.router";
@@ -38,7 +39,17 @@ async function init() {
 
   await gqlServer.start();
 
-  app.use("/graphql", expressMiddleware(gqlServer));
+  app.use(
+    "/graphql",
+    expressMiddleware(gqlServer, {
+      context: async ({ req }) => {
+        const user = await requireAuth({ req });
+
+        // Add the user to the context
+        return { user };
+      },
+    })
+  );
 
   // REST
   app.use(bodyParser.urlencoded({ extended: false }));
