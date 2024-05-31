@@ -30,6 +30,7 @@ async function init() {
   };
 
   app.use(express.json());
+  app.use(cors(corsOptions));
 
   // GraphQl
   const gqlServer = new ApolloServer({
@@ -54,7 +55,7 @@ async function init() {
   // REST
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
-  app.use(cors(corsOptions));
+
   app.use(
     expressSession({
       secret: process.env.EXPRESS_SESSION_SECRET || "abc",

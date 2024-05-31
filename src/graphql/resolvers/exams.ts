@@ -5,7 +5,7 @@ import { ExamType } from "../../models/Exam";
 
 import { ObjectId } from "mongodb";
 
-const TOTAL_QUESTIONS = 2;
+const TOTAL_QUESTIONS = 20;
 
 async function getNextQuestion(
   difficulty: number,
