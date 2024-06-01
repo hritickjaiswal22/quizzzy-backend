@@ -16,7 +16,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-      callbackURL: "https://quizzzy-backend.onrender.com/auths/google",
+      callbackURL: "https://quizzzy-backend.onrender.com/auths/google/redirect",
     },
     async (accessToken, refreshToken, profile, done) => {
       const email = profile.emails?.[0].value;
